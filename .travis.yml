@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t amyzeta/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run amyzeta/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t amyzeta/multi-client ./client
+  - docker build -t amyzeta/multi-server ./server
+  - docker build -t amyzeta/multi-worker ./worker
+  - docker build -t amyzeta/multi-nginx ./nginx
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push amyzeta/multi-client
+  - docker push amyzeta/multi-server
+  - docker push amyzeta/multi-worker
+  - docker push amyzeta/multi-nginx
