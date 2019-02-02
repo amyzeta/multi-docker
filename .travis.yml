@@ -18,3 +18,16 @@ after_success:
   - docker push amyzeta/multi-server
   - docker push amyzeta/multi-worker
   - docker push amyzeta/multi-nginx
+
+deploy:
+  provider: elasticbeanstalk
+  region: ap-southeast-2
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-ap-southeast-2-747541865085
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
